@@ -15,6 +15,6 @@
 int	get_next_line(const int fd, char **line)
 {
 	ft_putnbr(fd);
-	ft_putstr(*line);
+	ft_putstr(line[1]);
 	return (0);
 }
