@@ -17,16 +17,12 @@
 
 int	main()
 {
-	//char *line;
-	int afd;
-	int bfd;
-	int cfd;
+	char *line;
+	int fd;
 
-	afd = open("42", O_RDONLY);
-	bfd = open("21", O_WRONLY);
-	cfd = open("84", O_WRONLY);
-	printf("%d\t\t\t%p -----> file 42\n", afd, fdopen(afd, "r"));
-	printf("%d\t\t\t%p -----> file 21\n", bfd, fdopen(bfd, "w"));
-	printf("%d\t\t\t%p -----> file 84\n", cfd, fdopen(cfd, "w"));
+	fd = open("42", O_RDONLY);
+	get_next_line(fd, &line);
+	//ft_putstr(line);
+	close(fd);
 	return (0);
 }

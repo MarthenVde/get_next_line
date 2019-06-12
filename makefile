@@ -12,7 +12,7 @@
 
 NAME = line
 
-FILES = get_next_line.c libft.a main.c
+FILES = get_next_line.c libft/libft.a main.c
 
 all: $(FILES)
 	gcc -Wall -Werror -Wextra $(FILES) -o $(NAME)
