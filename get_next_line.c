@@ -12,31 +12,40 @@
 
 #include "get_next_line.h"
 
-int	line_width(int fd)
+/*
+int	b_copy(char buff[], char **line)
 {
-	char	buff[32];
-	int		b_read;
+	int ret;
+	int i;
 
-	ft_memset( (void *) buff, 0, (size_t) 32);
-	b_read = read(fd, (void *) buff, (size_t) 32);
-	if (b_read == -1 || b_read == 0)
-		return (-1);
-	buff[31] = '\0';
-	return (ft_atoi(buff));
+	i = -1;
+	ret = 1;
+	while (buff[++i] != '\0')
+	{
+		if (buff[i] == '\n')
+			ret = 0;
+		**line = buff[i];
+		line++;
+	}
+	return (ret);
 }
-
+*/
 int	get_next_line(const int fd, char **line)
 {
-	char	buff[BUFF_SIZE + 1];
-	int		nbytes;
+	static	char	buff[BUFF_SIZE + 1];
+	int				nbytes;
 
+	*line = ft_strnew(999);
+	ft_memset((void *) buff, 0, (size_t) BUFF_SIZE);
 	if (fd == -1 || !(*line))
 		return (-1);
-	if ((nbytes = read(fd, buff, BUFF_SIZE)) > 0)
+	while ((nbytes = read(fd, buff, BUFF_SIZE)) > 0)
 	{
 		buff[nbytes] = '\0';
+		//ft_putstr(buff);
+		ft_strcpy(*line, buff);
+		ft_putstr(*line);
+		ft_putchar('\n');
 	}
-	*line = ft_strcpy(*line, buff);
-	ft_putnbr(line_width(fd));
 	return (1);
 }

@@ -20,9 +20,11 @@ int	main()
 	char *line;
 	int fd;
 
+	line = strnew(99);
 	fd = open("42", O_RDONLY);
 	get_next_line(fd, &line);
-	//ft_putstr(line);
+	ft_putstr(line);
+	ft_putnbr(ft_strlen(line));
 	close(fd);
 	return (0);
 }
