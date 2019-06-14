@@ -12,40 +12,83 @@
 
 #include "get_next_line.h"
 
-/*
-int	b_copy(char buff[], char **line)
-{
-	int ret;
-	int i;
 
-	i = -1;
-	ret = 1;
-	while (buff[++i] != '\0')
+char	*readit(const int fd, char *str)
 	{
-		if (buff[i] == '\n')
-			ret = 0;
-		**line = buff[i];
-		line++;
+		char	buf[BUFF_SIZE + 1];
+		int		i2;
+
+		if (fd < 0 || read(fd, buf, 0) < 0 || BUFF_SIZE < 1)
+			return (NULL);
+		if (str == NULL)
+			str = ft_strnew(1);
+		while (!(ft_strchr(str, '\n')))
+		{
+			if ((i2 = read(fd, buf, BUFF_SIZE)) < 0)
+				return (NULL);
+			buf[i2] = '\0';
+			str = ft_strnjoin(str, buf, 1);
+			if (str[0] == '\0' || i2 == 0)
+				break ;
+		}
+		return (str);
 	}
-	return (ret);
+
+	int		get_next_line(const int fd, char **line)
+	{
+		static char *str;
+		char		*pos;
+		int			len;
+
+		if (!(str = readit(fd, str)) || !line)
+			return (-1);
+		if ((pos = ft_strchr(str, '\n')) != NULL)
+		{
+			len = pos - str;
+			if (!(*line = ft_strndup(str, len)))
+				return (-1);
+			str = ft_strdup(pos + 1);
+			return (1);
+		}
+		else
+		{
+			if (!(*line = ft_strdup(str)))
+				return (-1);
+			free(str);
+			str = NULL;
+			if (*line[0] == '\0')
+				return (0);
+			return (1);
+		}
+	}
+}	
+
+/* 
+while (read(1,buff,1))
+{
+	buff = strjoin(buff);	
+	if ( buff[strlen(buff)] == '\n')
+	{
+		line = (strsplit(buff , '\n'));
+		return ;
+	}
 }
+
+
+
+//////////////
+
+while (arr[i][0] != NULL)
+{
+	while(arr[i[j]] !=  '/0')
+	{
+		write(1, &arr[i][j],1 );
+		j++;
+	}
+	j =0;
+	i++;
+}
+
+file = [a, b, \n, c, d]
+str = [a, b, '\0']
 */
-int	get_next_line(const int fd, char **line)
-{
-	static	char	buff[BUFF_SIZE + 1];
-	int				nbytes;
-
-	*line = ft_strnew(999);
-	ft_memset((void *) buff, 0, (size_t) BUFF_SIZE);
-	if (fd == -1 || !(*line))
-		return (-1);
-	while ((nbytes = read(fd, buff, BUFF_SIZE)) > 0)
-	{
-		buff[nbytes] = '\0';
-		//ft_putstr(buff);
-		ft_strcpy(*line, buff);
-		ft_putstr(*line);
-		ft_putchar('\n');
-	}
-	return (1);
-}
