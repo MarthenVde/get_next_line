@@ -12,57 +12,60 @@
 
 #include "get_next_line.h"
 
-
-char	*readit(const int fd, char *str)
+char *read_to_str(int fd, char *str)
+{
+	char	buff[BUFF_SIZE + 1];
+	ssize_t	b_read;
+	char	*tmp;
+	
+	ft_memset(buff, 0 , BUFF_SIZE);
+	if (read(fd, buff, 0) < 0 || fd < 0 || BUFF_SIZE < 1)
+		return (NULL);
+	if (!str)
+		str = ft_strnew(1);
+	while (!(ft_strchr(str, '\n')))
 	{
-		char	buf[BUFF_SIZE + 1];
-		int		i2;
-
-		if (fd < 0 || read(fd, buf, 0) < 0 || BUFF_SIZE < 1)
+		if ((b_read = read(fd, buff, BUFF_SIZE)) < 0)
 			return (NULL);
-		if (str == NULL)
-			str = ft_strnew(1);
-		while (!(ft_strchr(str, '\n')))
-		{
-			if ((i2 = read(fd, buf, BUFF_SIZE)) < 0)
-				return (NULL);
-			buf[i2] = '\0';
-			str = ft_strnjoin(str, buf, 1);
-			if (str[0] == '\0' || i2 == 0)
-				break ;
-		}
-		return (str);
+		tmp = str;
+		str = ft_strjoin(str, buff);
+		free(tmp);
+		if (str[0] == '\0' || b_read == 0)
+			break ;
 	}
+	return (str);
+}
 
-	int		get_next_line(const int fd, char **line)
+int		get_next_line(const int fd, char **line)
+{
+	static char *str;
+	char		*adr_lf;
+	char		*tmp;
+
+	*line = NULL;
+	if (!(str = read_to_str(fd, str)) || !line)
+		return (-1);
+	adr_lf = ft_strchr(str, '\n');
+	if (adr_lf != NULL)
 	{
-		static char *str;
-		char		*pos;
-		int			len;
-
-		if (!(str = readit(fd, str)) || !line)
+		if (!(*line = (ft_strndup(str, adr_lf - str))))
 			return (-1);
-		if ((pos = ft_strchr(str, '\n')) != NULL)
-		{
-			len = pos - str;
-			if (!(*line = ft_strndup(str, len)))
-				return (-1);
-			str = ft_strdup(pos + 1);
-			return (1);
-		}
-		else
-		{
-			if (!(*line = ft_strdup(str)))
-				return (-1);
-			free(str);
-			str = NULL;
-			if (*line[0] == '\0')
-				return (0);
-			return (1);
-		}
+		tmp = str;
+		str = ft_strdup(adr_lf + 1);
+		free(tmp);
+		return (1);
 	}
-}	
-
+	else
+	{
+		while (str[0] != '\0')
+		{
+			*line = ft_strjoin(*line, str);
+			str = read_to_str(fd, str);
+		}
+		free(str);
+		return (0);
+	}
+}
 /* 
 while (read(1,buff,1))
 {
@@ -74,21 +77,8 @@ while (read(1,buff,1))
 	}
 }
 
-
-
-//////////////
-
-while (arr[i][0] != NULL)
-{
-	while(arr[i[j]] !=  '/0')
-	{
-		write(1, &arr[i][j],1 );
-		j++;
-	}
-	j =0;
-	i++;
-}
-
-file = [a, b, \n, c, d]
-str = [a, b, '\0']
+	string, buffer.
+	char *tmp = string;
+	free(tmp);
+	string = strjoin(string, buffer);
 */

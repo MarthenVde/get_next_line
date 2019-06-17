@@ -19,23 +19,14 @@ int	main()
 {
 	char *line;
 	int fd;
-	int ret;
 
 	fd = open("42", O_RDONLY);
-	ret = get_next_line(fd, &line);
-	ft_putnbr(ret);
-	ft_putchar('\n');
-	ft_putstr(line);
-	ret = get_next_line(fd, &line);
-	ft_putchar('\n');
-	ft_putnbr(ret);
-	ft_putchar('\n');
-	ft_putstr(line);
-	ret = get_next_line(fd, &line);
-	ft_putchar('\n');
-	ft_putnbr(ret);
-	ft_putchar('\n');
-	ft_putstr(line);
+
+	while (get_next_line(fd, &line) > 0)
+	{
+		ft_putendl(line);
+	}
+	
 	close(fd);
 	return (0);
 }
