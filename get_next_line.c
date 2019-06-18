@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
+ 
 char *read_to_str(int fd, char *str)
 {
 	char	buff[BUFF_SIZE + 1];
@@ -19,14 +19,17 @@ char *read_to_str(int fd, char *str)
 	char	*tmp;
 	
 	ft_memset(buff, 0 , BUFF_SIZE);
-	if (read(fd, buff, 0) < 0 || fd < 0 || BUFF_SIZE < 1)
+	if (read(fd, NULL, 0) < 0 || fd < 0 || BUFF_SIZE < 1)
+	{
 		return (NULL);
+	}
 	if (!str)
 		str = ft_strnew(1);
 	while (!(ft_strchr(str, '\n')))
 	{
 		if ((b_read = read(fd, buff, BUFF_SIZE)) < 0)
 			return (NULL);
+		buff[b_read] = '\0';
 		tmp = str;
 		str = ft_strjoin(str, buff);
 		free(tmp);
@@ -42,8 +45,7 @@ int		get_next_line(const int fd, char **line)
 	char		*adr_lf;
 	char		*tmp;
 
-	*line = NULL;
-	if (!(str = read_to_str(fd, str)) || !line)
+	if (!line || !(str = read_to_str(fd, str)))
 		return (-1);
 	adr_lf = ft_strchr(str, '\n');
 	if (adr_lf != NULL)
@@ -57,28 +59,17 @@ int		get_next_line(const int fd, char **line)
 	}
 	else
 	{
-		while (str[0] != '\0')
+		if (str[0] == '\0')
 		{
-			*line = ft_strjoin(*line, str);
-			str = read_to_str(fd, str);
+			ft_strdel(&str);
+			return (0);
 		}
-		free(str);
-		return (0);
+		if (!(*line = ft_strdup(str)))
+		{
+			ft_strdel(&str);
+			return (-1);
+		}
+		ft_strdel(&str);
+		return (1);
 	}
 }
-/* 
-while (read(1,buff,1))
-{
-	buff = strjoin(buff);	
-	if ( buff[strlen(buff)] == '\n')
-	{
-		line = (strsplit(buff , '\n'));
-		return ;
-	}
-}
-
-	string, buffer.
-	char *tmp = string;
-	free(tmp);
-	string = strjoin(string, buffer);
-*/

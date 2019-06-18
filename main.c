@@ -14,19 +14,24 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+# include <assert.h>
 
 int	main()
 {
-	char *line;
-	int fd;
+	char 	*line;
+	int		out;
+	int		p[2];
+	int		fd;
 
-	fd = open("42", O_RDONLY);
+	out = dup(1);
+	pipe(p);
 
-	while (get_next_line(fd, &line) > 0)
-	{
-		ft_putendl(line);
-	}
-	
-	close(fd);
+	fd = 1;
+	dup2(p[1], fd);
+	write(fd, "mnopqrstuvwxyzab", 16);
+	close(p[1]);
+	dup2(out, fd);
+	get_next_line(p[0], &line);
+	strcmp(line, "mnopqrstuvwxyzab");
 	return (0);
 }
