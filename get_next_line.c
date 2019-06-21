@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-char	*ft_realloc_str(char *str, char *new)
+static	char	*ft_realloc_str(char *str, char *new)
 {
 	char *tmp;
 
@@ -22,12 +22,11 @@ char	*ft_realloc_str(char *str, char *new)
 	return (new);
 }
 
-char	*read_to_str(int fd, char *str)
+static	char	*read_to_str(int fd, char *str)
 {
 	char	buff[BUFF_SIZE + 1];
 	ssize_t	b_read;
 
-	ft_memset(buff, 0, BUFF_SIZE);
 	if (read(fd, NULL, 0) < 0 || fd < 0 || BUFF_SIZE < 1)
 		return (NULL);
 	if (!str)
@@ -38,13 +37,13 @@ char	*read_to_str(int fd, char *str)
 			return (NULL);
 		buff[b_read] = '\0';
 		str = ft_realloc_str(str, ft_strjoin(str, buff));
-		if (str[0] == '\0' || b_read == 0)
+		if (b_read == 0)
 			break ;
 	}
 	return (str);
 }
 
-int		get_next_line(const int fd, char **line)
+int				get_next_line(const int fd, char **line)
 {
 	static char *str;
 	char		*adr_lf;
@@ -52,8 +51,7 @@ int		get_next_line(const int fd, char **line)
 
 	if (!line || !(str = read_to_str(fd, str)))
 		return (-1);
-	adr_lf = ft_strchr(str, '\n');
-	if (adr_lf != NULL)
+	if ((adr_lf = ft_strchr(str, '\n')))
 	{
 		if (!(*line = (ft_strndup(str, adr_lf - str))))
 			return (-1);
