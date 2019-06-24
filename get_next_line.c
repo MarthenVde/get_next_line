@@ -27,8 +27,6 @@ static	char	*read_to_str(int fd, char *str)
 	char	buff[BUFF_SIZE + 1];
 	ssize_t	b_read;
 
-	if (!str)
-		str = ft_strnew(1);
 	while (!(ft_strchr(str, '\n')))
 	{
 		if ((b_read = read(fd, buff, BUFF_SIZE)) < 0)
@@ -47,6 +45,7 @@ int				get_next_line(const int fd, char **line)
 	char		*adr_lf;
 	int			ret;
 
+	str = !str ? ft_strnew(1) : str;
 	if (!line || BUFF_SIZE < 1 || !(str = read_to_str(fd, str)))
 		return (-1);
 	if ((adr_lf = ft_strchr(str, '\n')))
