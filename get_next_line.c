@@ -47,8 +47,7 @@ int				get_next_line(const int fd, char **line)
 	char		*adr_lf;
 	int			ret;
 
-	if (!line || fd < 0 || BUFF_SIZE < 1
-		|| !(str = read_to_str(fd, str)))
+	if (!line || BUFF_SIZE < 1 || !(str = read_to_str(fd, str)))
 		return (-1);
 	if ((adr_lf = ft_strchr(str, '\n')))
 	{
